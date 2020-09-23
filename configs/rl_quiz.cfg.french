@@ -1,0 +1,131 @@
+"Rl_quiz"
+{
+	"Maths" // thème
+	{
+		"id"	"maths" // Un identifiant unique, sans espace et caractères bizarres. Nécessaire pour que les menus l'identifient.
+		
+		"Très facile" // difficulté
+		{
+			"id"				"tresfacile" // Un identifiant unique, sans espace et caractères bizarres. Nécessaire pour que les menus l'identifient.
+			
+			"order"				"random" // random veut dire que ça génèrera des questions de mathématique aléatoires
+			"reward"			"1" // nombre de monnaie à donner à l'utilisateur qui trouve la bonne réponse (avec le mode 'On Round Start')
+			
+			// Ajoutez ça si "order" est "random"
+			"min_individual"	"0" // valeur minimum qu'un nombre peut avoir
+			"max_individual"	"9" // valeur maximum qu'un nombre peut avoir
+			
+			"min_amount"		"2" // montant minimum de nombres à ajouter/soustraire.. ex: 3 signifie que vous ne pouvez pas avoir moins de 3 opérations: '24+10' ne sera pas possible
+			"max_amount"		"2" // montant maximum de nombres à ajouter/soustraire..
+			
+			"type_addition"		"1" // 0 pour interdire - 1 pour autoriser
+			"type_subtraction"	"1"	// 0 pour interdire - 1 pour autoriser
+			"type_multiply"		"0" // 0 pour interdire - 1 pour autoriser
+			"type_divide"		"0" // 0 pour interdire - 1 pour autoriser
+		}
+		"Facile" // difficulté
+		{
+			"id"				"facile" // Un identifiant unique, sans espace et caractères bizarres. Nécessaire pour que les menus l'identifient.
+			
+			"order"				"random" // random veut dire que ça génèrera des questions de mathématique aléatoires
+			"reward"			"2" // nombre de monnaie à donner à l'utilisateur qui trouve la bonne réponse (avec le mode 'On Round Start')
+			
+			// Ajoutez ça si "order" est "random"
+			"min_individual"	"0" // valeur minimum qu'un nombre peut avoir
+			"max_individual"	"20" // valeur maximum qu'un nombre peut avoir
+			
+			"min_amount"		"3" // montant minimum de nombres à ajouter/soustraire.. ex: 3 signifie que vous ne pouvez pas avoir moins de 3 opérations: '24+10' ne sera pas possible
+			"max_amount"		"4" // montant maximum de nombres à ajouter/soustraire..
+			
+			"type_addition"		"1" // 0 pour interdire - 1 pour autoriser
+			"type_subtraction"	"1"	// 0 pour interdire - 1 pour autoriser
+			"type_multiply"		"0" // 0 pour interdire - 1 pour autoriser
+			"type_divide"		"0" // 0 pour interdire - 1 pour autoriser
+		}
+		"Moyen" // difficulté
+		{
+			"id"				"moyen" // Un identifiant unique, sans espace et caractères bizarres. Nécessaire pour que les menus l'identifient.
+			
+			"order"				"random" // random veut dire que ça génèrera des questions de mathématique aléatoires
+			"reward"			"3" // nombre de monnaie à donner à l'utilisateur qui trouve la bonne réponse (avec le mode 'On Round Start')
+			
+			// Ajoutez ça si "order" est "random"
+			"min_individual"	"-9" // valeur minimum qu'un nombre peut avoir
+			"max_individual"	"9" // valeur maximum qu'un nombre peut avoir
+			
+			"min_amount"		"2" // montant minimum de nombres à ajouter/soustraire.. ex: 3 signifie que vous ne pouvez pas avoir moins de 3 opérations: '24+10' ne sera pas possible
+			"max_amount"		"2" // montant maximum de nombres à ajouter/soustraire..
+			
+			"type_addition"		"0" // 0 pour interdire - 1 pour autoriser
+			"type_subtraction"	"0"	// 0 pour interdire - 1 pour autoriser
+			"type_multiply"		"1" // 0 pour interdire - 1 pour autoriser
+			"type_divide"		"1" // 0 pour interdire - 1 pour autoriser
+		}
+		"Difficile" // difficulté
+		{
+			"id"				"difficile" // Un identifiant unique, sans espace et caractères bizarres. Nécessaire pour que les menus l'identifient.
+			
+			"order"				"random" // random veut dire que ça génèrera des questions de mathématique aléatoires
+			"reward"			"4" // nombre de monnaie à donner à l'utilisateur qui trouve la bonne réponse (avec le mode 'On Round Start')
+			
+			// Ajoutez ça si "order" est "random"
+			"min_individual"	"-9" // valeur minimum qu'un nombre peut avoir
+			"max_individual"	"9" // valeur maximum qu'un nombre peut avoir
+			
+			"min_amount"		"3" // montant minimum de nombres à ajouter/soustraire.. ex: 3 signifie que vous ne pouvez pas avoir moins de 3 opérations: '24+10' ne sera pas possible
+			"max_amount"		"3" // montant maximum de nombres à ajouter/soustraire..
+			
+			"type_addition"		"1" // 0 pour interdire - 1 pour autoriser
+			"type_subtraction"	"1"	// 0 pour interdire - 1 pour autoriser
+			"type_multiply"		"1" // 0 pour interdire - 1 pour autoriser
+			"type_divide"		"1" // 0 pour interdire - 1 pour autoriser
+		}
+		"Très difficile" // difficulté
+		{
+			"id"				"tresdifficile" // Un identifiant unique, sans espace et caractères bizarres. Nécessaire pour que les menus l'identifient.
+			
+			"order"				"random" // random veut dire que ça génèrera des questions de mathématique aléatoires
+			"reward"			"5" // nombre de monnaie à donner à l'utilisateur qui trouve la bonne réponse (avec le mode 'On Round Start')
+			
+			// Ajoutez ça si "order" est "random"
+			"min_individual"	"-300" // valeur minimum qu'un nombre peut avoir
+			"max_individual"	"300" // valeur maximum qu'un nombre peut avoir
+			
+			"min_amount"		"4" // montant minimum de nombres à ajouter/soustraire.. ex: 3 signifie que vous ne pouvez pas avoir moins de 3 opérations: '24+10' ne sera pas possible
+			"max_amount"		"4" // montant maximum de nombres à ajouter/soustraire..
+			
+			"type_addition"		"1" // 0 pour interdire - 1 pour autoriser
+			"type_subtraction"	"1"	// 0 pour interdire - 1 pour autoriser
+			"type_multiply"		"1" // 0 pour interdire - 1 pour autoriser
+			"type_divide"		"1" // 0 pour interdire - 1 pour autoriser
+		}
+	}
+	"Prix des armes CS:GO"
+	{
+		"id"		"prixarmecsgo"
+		
+		"Facile" // difficulté
+		{
+			"id"				"facile" // Un identifiant unique, sans espace et caractères bizarres. Nécessaire pour que les menus l'identifient.
+			
+			"order"				"manual" // manual veut dire que vous devrez entrer chaque question manuellement, et que ça prendra une question aléatoire à partir de ce qui est disponible
+			"reward"			"2" // nombre de monnaie à donner à l'utilisateur qui trouve la bonne réponse (avec le mode 'On Round Start')
+			
+			// Ajouter ça si "order" est "manual"
+			"question1"			"Quel est le prix d'une AWP ?"
+			"answer1"			"4750;$4750;4750$;4750€" // Ajouter ';' permet d'avoir plusieurs réponses. Suivant cette logique, votre réponse normale ne peut pas contenir ';'.
+			
+			"question2"			"Quel est le prix d'une AK47 ?"
+			"answer2"			"2700;$2700;2700$;2700€"
+			
+			"question3"			"Quel est le prix d'une grenade explosive ?"
+			"answer3"			"300;$300;300$;300€"
+			
+			// Vous pouvez ajouter jusqu'à 50 questions, utilisez simplement ce format :
+			// question+1 et answer+1  (par exemple "question4" et "answer4" - référez-vous à la configuration par défaut)
+			// Les questions&réponses doivent commencer à '1' et s'incrémenter de '1'.
+			
+			// Vous pouvez ajouter jusqu'à 15 bonnes réponses différentes pour chaque question
+		}
+	}
+}
