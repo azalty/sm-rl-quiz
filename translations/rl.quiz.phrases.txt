@@ -83,7 +83,7 @@
 	"OnRS_YouGot"
 	{
 		// {1} = Prefix - {2} = amount of currency - {3} = CurrencyName
-		"#format"	"{1:t},{2:i},{3:s}"
+		"#format"	"{1:t},{2:i},{3:t}"
 		"en"	"{1}You won {gold}{2} {3}{default}!"
 		"fr"	"{1}Vous avez gagné {gold}{2} {3}{default} !"
 	}
