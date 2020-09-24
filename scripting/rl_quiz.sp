@@ -57,7 +57,6 @@ Limitations:
 - "random order"	'max_amount' limit is 50
 
 - "manual order"	maximum amount of questions is 50
-- "manual order"	
 - "manual order"	maximum amount of answers PER question is 15
 
 - Maximum amount of difficulties is 15
