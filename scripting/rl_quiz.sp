@@ -177,7 +177,7 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 					theme_number++;
 					// Current key is a section. Browse it recursively.
 					
-					kv.GetString("id", themelist[theme_number], sizeof(themelist));
+					kv.GetString("id", themelist[theme_number], sizeof(themelist[]));
 					//LogMessage("random theme found: %s", themelist[theme_number]);
 					
 					//kv.GoBack();
@@ -383,7 +383,7 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 					theme_number++;
 					// Current key is a section. Browse it recursively.
 					
-					kv.GetString("id", themelist[theme_number], sizeof(themelist));
+					kv.GetString("id", themelist[theme_number], sizeof(themelist[]));
 					//LogMessage("random theme found: %s", themelist[theme_number]);
 					
 					//kv.GoBack();
@@ -716,8 +716,8 @@ public void InitQuestions(int client)
 		// manual questions	
 		int number_of_questions = 0;
 		
-		char manual_question[30][128]; // max number of questions 30 - max question size 128 
-		char manual_answer[30][128];
+		char manual_question[50][128]; // max number of questions 50 - max question size 128 
+		char manual_answer[50][128];
 		
 		char keytoget_q[16];
 		char keytoget_a[16];
@@ -729,8 +729,8 @@ public void InitQuestions(int client)
 			Format(keytoget_q, sizeof(keytoget_q), "question%i", number_of_questions);
 			Format(keytoget_a, sizeof(keytoget_a), "answer%i", number_of_questions);
 			
-			kv.GetString(keytoget_q, manual_question[number_of_questions], sizeof(manual_question), "error! key not found");
-			kv.GetString(keytoget_a, manual_answer[number_of_questions], sizeof(manual_answer), "error! key not found");
+			kv.GetString(keytoget_q, manual_question[number_of_questions], sizeof(manual_question[]), "error! key not found");
+			kv.GetString(keytoget_a, manual_answer[number_of_questions], sizeof(manual_answer[]), "error! key not found");
 			
 			if (StrEqual(manual_question[number_of_questions], "error! key not found") || StrEqual(manual_answer[number_of_questions], "error! key not found"))
 			{
