@@ -215,6 +215,7 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 				} while (kv.GotoNextKey());
 				
 				// Listing all difficulties
+				kv.GotoFirstSubKey();
 				do
 				{
 					theme_number++;
