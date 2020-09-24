@@ -22,7 +22,8 @@ This mode will send a quiz at the start of the round. Anyone can answer it.
 **Features:**
 - Customizable delay (time to wait after round start before sending the quiz)
 - Question selection: select if you only want random math questions, manual questions or everything
-- Reward: chose if you want to give a reward to the winner with supported currencies (Zeph store & SourceMod Store) *Custom currencies are supported if you know how to code, simply use the forward!*
+- Reward: chose if you want to give a reward to the winner with supported currencies (Zeph store & SourceMod Store)
+- *Custom currencies are supported if you know how to code, simply use the forward!*
 ----------------------------
 ### MyJailBreak Warden
 This mode will allow the Warden to start a Quiz with `!quiz`. Only alive Ts will be able to answer it. *I know that a module already exists for this but compatibility is always better!*
