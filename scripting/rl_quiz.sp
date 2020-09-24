@@ -22,9 +22,9 @@ Compiled using SM 1.10
 char g_currentThemeID[32];
 char g_currentDifficultyID[32];
 
-char question[128];
-char answer[128];
-char multipleAnswers[15][128];
+char question[150];
+char answer[150];
+char multipleAnswers[15][150];
 bool impossible;
 int questionCountInt;
 bool inQuiz;
@@ -63,7 +63,7 @@ Limitations:
 -
 - Theme/Difficulty names should not exceed 50 characters (or less if using accents éè or different symbols like €)
 - Theme/Difficulty IDs should remain short (32 characters or less)
-- Questions&answers should not exceed 128 characters. It will never exceed that in normal circumstances.
+- Questions&answers should not exceed 150 characters. It will never exceed that in normal circumstances.
 */
 
 /*
@@ -716,8 +716,8 @@ public void InitQuestions(int client)
 		// manual questions	
 		int number_of_questions = 0;
 		
-		char manual_question[50][128]; // max number of questions 50 - max question size 128 
-		char manual_answer[50][128];
+		char manual_question[50][150]; // max number of questions 50 - max question size 150
+		char manual_answer[50][150];
 		
 		char keytoget_q[16];
 		char keytoget_a[16];
