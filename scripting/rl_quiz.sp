@@ -667,7 +667,7 @@ public void InitQuestions(int client)
 				}
 				else
 				{
-					Format(question, sizeof(question), "(%s * %i)", question, RoundToZero(random_amount[i]));
+					Format(question, sizeof(question), "(%s) * %i", question, RoundToZero(random_amount[i]));
 					result = result * random_amount[i];
 				}
 			}
@@ -680,12 +680,12 @@ public void InitQuestions(int client)
 				}
 				else if (random_amount[i] == 0)
 				{
-					Format(question, sizeof(question), "(%s / %i)", question, RoundToZero(random_amount[i]));
+					Format(question, sizeof(question), "(%s) / %i", question, RoundToZero(random_amount[i]));
 					impossible = true; // in this particular case, it's not possible. Instead of doing +inf, -inf... we will just say it's impossible.
 				}
 				else
 				{
-					Format(question, sizeof(question), "(%s / %i)", question, RoundToZero(random_amount[i]));
+					Format(question, sizeof(question), "(%s) / %i", question, RoundToZero(random_amount[i]));
 					result = result / random_amount[i];
 				}
 			}
