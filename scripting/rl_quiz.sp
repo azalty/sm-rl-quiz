@@ -12,7 +12,8 @@
 this plugin needs:
 - colorvariables.inc
 - MyJailBreak (warden module)
-- Sourcemod Store (updated version - https://forums.alliedmods.net/showthread.php?t=255418)
+- Sourcemod Store (store-core.inc: updated version - https://forums.alliedmods.net/showthread.php?t=255418)
+You will also need this fix: https://github.com/SourceMod-Store/Sourcemod-Store/pull/11
 
 Compiled using SM 1.10
 */
@@ -32,6 +33,8 @@ int currentWarden;
 bool isMathQuestion;
 bool isWardenQuiz;
 int reward;
+
+bool gp_storeCore;
 
 Handle questionReadTimer;
 Handle questionTimer;
@@ -54,8 +57,11 @@ Limitations:
 - "random order"	'max_amount' limit is 50
 
 - "manual order"	maximum amount of questions is 50
+- "manual order"	
 - "manual order"	maximum amount of answers PER question is 15
 
+- Maximum amount of difficulties is 15
+-
 - Theme/Difficulty names should not exceed 50 characters (or less if using accents éè or different symbols like €)
 - Theme/Difficulty IDs should remain short (32 characters or less)
 - Questions&answers should not exceed 128 characters. It will never exceed that in normal circumstances.
@@ -70,7 +76,7 @@ public Plugin myinfo =
 	name = "RL Quiz System",
 	author = "azalty/rlevet",
 	description = "A private jailbreak quiz system",
-	version = "1.0.0",
+	version = "0.9.0 beta",
 	url = "github.com/rlevet"
 }
 
@@ -105,6 +111,27 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	RegPluginLibrary("rl_quiz");
 	
 	return APLRes_Success;
+}
+
+public void OnAllPluginsLoaded()
+{
+	gp_storeCore = LibraryExists("store/store-core");
+}
+
+public void OnLibraryAdded(const char[] name)
+{
+	if (StrEqual(name, "store/store-core"))
+	{
+		gp_storeCore = true;
+	}
+}
+
+public void OnLibraryRemoved(const char[] name)
+{
+	if (StrEqual(name, "store/store-core"))
+	{
+		gp_storeCore = false;
+	}
 }
 
 public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
@@ -157,15 +184,49 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 					//kv.GoBack();
 				} while (kv.GotoNextKey());
 				
-				delete kv;
+				kv.Rewind(); // set up to default for the next check
 				
 				//int chosen_theme_id = RoundToZero(GetURandomFloat() * (theme_number+0.9999999)); // choose a random theme from 0 to 'theme_number'
-				float chosen_theme_id_f = (GetURandomFloat() * (theme_number+0.9999999));
-				int chosen_theme_id = RoundToZero(chosen_theme_id_f);
+				int chosen_theme_id = RoundToZero((GetURandomFloat() * (theme_number+0.9999999)));
 				//LogMessage("random float: %f", chosen_theme_id_f);
 				//LogMessage("random round: %i", chosen_theme_id);
 				//LogMessage("random theme selected: %s (total: %i)", themelist[chosen_theme_id], (theme_number+1));
 				g_currentThemeID = themelist[chosen_theme_id]; // set the new theme
+				
+				
+				// Let's find a random difficulty
+				kv.GotoFirstSubKey();
+				
+				char difficultylist[15][32]; // up to 15 difficulties
+				int difficulty_number = -1;
+				
+				// trying to find the Theme..
+				do
+				{
+					// Current key is a section. Browse it recursively.
+					
+					char theme_id[32];
+					kv.GetString("id", theme_id, sizeof(theme_id));
+					if (StrEqual(theme_id, g_currentThemeID))
+					{
+						break; // exit the loop, we are now in the good Theme
+					}
+					
+					//kv.GoBack();
+				} while (kv.GotoNextKey());
+				
+				// Listing all difficulties
+				do
+				{
+					theme_number++;
+					
+					kv.GetString("id", difficultylist[difficulty_number], sizeof(difficultylist[]));
+				} while (kv.GotoNextKey());
+				
+				delete kv;
+				
+				int chosen_difficulty_id = RoundToZero((GetURandomFloat() * (theme_number+0.9999999)));
+				g_currentDifficultyID = difficultylist[chosen_difficulty_id]; // set the new theme
 				
 				OnRS_InitQuestionsTimer = CreateTimer(cvarOnRoundStart_Delay.FloatValue, OnRS_InitQuestions);
 			}
@@ -869,8 +930,15 @@ public void GiveRewards(int client)
 		}
 		case 2:
 		{
-			int accountId = GetSteamAccountID(client);
-			Store_GiveCredits(accountId, reward, INVALID_FUNCTION, 0);
+			if (gp_storeCore)
+			{
+				int accountId = GetSteamAccountID(client);
+				Store_GiveCredits(accountId, reward, INVALID_FUNCTION, 0);
+			}
+			else
+			{
+				LogMessage("Warning! SM Store is not installed!");
+			}
 		}
 		case 3:
 		{
