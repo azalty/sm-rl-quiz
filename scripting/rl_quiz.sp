@@ -218,7 +218,7 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 				kv.GotoFirstSubKey();
 				do
 				{
-					theme_number++;
+					difficulty_number++;
 					
 					kv.GetString("id", difficultylist[difficulty_number], sizeof(difficultylist[]));
 				} while (kv.GotoNextKey());
