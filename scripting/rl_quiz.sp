@@ -51,6 +51,7 @@ Handle OnRS_InitQuestionsTimer;
 Handle gF_OnReward;
 
 ConVar cvarAnswerMode;
+ConVar cvarAnswerDelay;
 ConVar cvarOnRoundStart_Core;
 ConVar cvarOnRoundStart_Delay;
 ConVar cvarOnRoundStart_Questions;
@@ -89,6 +90,7 @@ public void OnPluginStart()
 {
 	// Cvars
 	cvarAnswerMode = CreateConVar("rl_quiz_answer", "0", "When the answer is found... 0 = ..write the first answer in the list (the first answer should be the best formulated one) | 1 = ..write the answer that the client found", _, true, 0.0, true, 1.0);
+	cvarAnswerDelay = CreateConVar("rl_quiz_delay", "30.0", "Delay in seconds people have to answer a question", _, true, 5.0, true, 60.0);
 	cvarOnRoundStart_Core = CreateConVar("rl_quiz_onroundstart_core", "0", "0 = Disabled | 1 = Enable this mode. It will send a Quiz at the start of the round", _, true, 0.0, true, 1.0);
 	cvarOnRoundStart_Delay = CreateConVar("rl_quiz_onroundstart_delay", "5.0", "Delay in seconds after Round Start to send the Quiz", _, true, 1.0, true, 90.0);
 	cvarOnRoundStart_Questions = CreateConVar("rl_quiz_onroundstart_questions", "2", "0 = Only send random math questions ('order random') | 1 = Only send manual questions ('order manuel') | 2 = Send everything", _, true, 0.0, true, 2.0);
@@ -111,7 +113,7 @@ public void OnPluginStart()
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	gF_OnReward = CreateGlobalForward("Rl_quiz_OnReward", ET_Ignore, Param_Cell);
+	gF_OnReward = CreateGlobalForward("Rl_quiz_OnReward", ET_Ignore, Param_Cell, Param_Cell);
 	
 	RegPluginLibrary("rl_quiz");
 	
@@ -855,7 +857,7 @@ public Action questionCount(Handle timer, int client)
 			CPrintToChatAll("%s%s", prefix, question);
 		}
 		
-		questionExpireTimer = CreateTimer(40.0, questionExpire, client);
+		questionExpireTimer = CreateTimer(cvarAnswerDelay.FloatValue, questionExpire, client);
 		questionCountTimer = null;
 		return Plugin_Stop;
 	}
@@ -987,6 +989,7 @@ public void GiveRewards(int client)
 	}
 	Call_StartForward(gF_OnReward);
 	Call_PushCell(client);
+	Call_PushCell(reward);
 	Call_Finish();
 	CPrintToChat(client, "%t", "OnRS_YouGot", "Prefix", reward, "CurrencyName");
 }
