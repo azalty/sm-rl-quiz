@@ -909,14 +909,33 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 	if ((((GetClientTeam(client) == 2) && isWardenQuiz) || (!isWardenQuiz)) && IsPlayerAlive(client))
 	{
 		//LogMessage("%N said '%s'", client, args[0]);
-		if ((impossible) && (StrEqual(args[0], "impossible", false) || StrEqual(args[0], "infini", false) || StrEqual(args[0], "erreur", false) || StrEqual(args[0], "inf", false) || StrEqual(args[0], "pas possible", false)))
+		if (impossible)
 		{
-			char playername[32];
-			GetClientName(client, playername, sizeof(playername));
-			CPrintToChatAll("%T", "FoundImpossible", LANG_SERVER, "Prefix", playername);
-			GiveRewards(client);
-			inQuiz = false; // no longer in quiz
-			delete questionExpireTimer;
+			char impossible_words[150];
+			Format(impossible_words, sizeof(impossible_words), "%T", "ImpossibleWords", LANG_SERVER);
+			char impossible_words_list[20][150] // 20 different words, 150 max size
+			ExplodeString(impossible_words, ";", impossible_words_list, sizeof(impossible_words_list), sizeof(impossible_words_list[]));
+			
+			for (int i; i < 20; i++)
+			{
+				if (StrEqual(args[0], impossible_words_list[i], false))
+				{
+					if (cvarAnswerMode.BoolValue)
+					{
+						answer = impossible_words_list[i]; // displays the user's answer if wanted. else, display the first one
+					}
+					else
+					{
+						answer = impossible_words_list[0];
+					}
+					char playername[32];
+					GetClientName(client, playername, sizeof(playername));
+					CPrintToChatAll("%T", "Found", LANG_SERVER, "Prefix", playername, answer);
+					GiveRewards(client);
+					inQuiz = false; // no longer in quiz
+					delete questionExpireTimer;
+				}
+			}
 		}
 		else if (StrEqual(args[0], answer, false))
 		{
