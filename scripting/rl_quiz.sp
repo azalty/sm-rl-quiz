@@ -710,7 +710,7 @@ public void InitQuestions(int client)
 					Format(question, sizeof(question), "%i", RoundToZero(random_amount[i]));
 					result = random_amount[i];
 				}
-				else if (random_amount[i] == 0)
+				else if (RoundToZero(random_amount[i]) == 0)
 				{
 					Format(question, sizeof(question), "(%s) / %i", question, RoundToZero(random_amount[i]));
 					impossible = true; // in this particular case, it's not possible. Instead of doing +inf, -inf... we will just say it's impossible.
