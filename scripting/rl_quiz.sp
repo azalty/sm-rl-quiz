@@ -36,6 +36,12 @@ int reward;
 
 bool gp_storeCore;
 
+// OnRS 'random/manual questions only' variables
+char banned_ids[50][32];
+int fail_count;
+bool nothing_error;
+// -------------------
+
 Handle questionReadTimer;
 Handle questionTimer;
 Handle questionCountTimer;
@@ -154,13 +160,14 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 			{
 				// only random math questions
 				// false = random math
-				int fail_count;
+				fail_count = 0;
+				nothing_error = false;
 				while (!OnRS_SearchForOrder(false)) // if returns false, no "random" order was found in this theme
 				{
 					fail_count++;
-					if (fail_count >= 50)
+					if (nothing_error)
 					{
-						CPrintToChatAll("ERROR: no 'random' order difficulty found after 50 tries.");
+						CPrintToChatAll("ERROR: no 'random' order difficulty found in %i themes.", fail_count);
 						return;
 					}
 				}
@@ -170,14 +177,14 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 			{
 				// only manual questions
 				// true = manual
-				char banned_ids[50][32];
-				int fail_count;
+				fail_count = 0;
+				nothing_error = false;
 				while (!OnRS_SearchForOrder(false)) // if returns false, no "random" order was found in this theme
 				{
 					fail_count++;
-					if (fail_count >= 50)
+					if (nothing_error)
 					{
-						CPrintToChatAll("ERROR: no 'manual' order difficulty found after 50 tries.");
+						CPrintToChatAll("ERROR: no 'manual' order difficulty found in %i themes.", fail_count);
 						return;
 					}
 				}
@@ -986,7 +993,7 @@ public Action OnRS_InitQuestions(Handle timer)
 	OnRS_InitQuestionsTimer = null;
 }
 
-public Action OnRS_SearchForOrder(bool manual_question)
+public bool OnRS_SearchForOrder(bool manual_question)
 {
 	char needed_order[32];
 	if (manual_question)
@@ -1014,7 +1021,7 @@ public Action OnRS_SearchForOrder(bool manual_question)
 		// Current key is a section. Browse it recursively.
 		
 		kv.GetString("id", themelist[theme_number], sizeof(themelist[]));
-		for (int i; i >= fail_count; i++)
+		for (int i; i < fail_count; i++)
 		{
 			if (StrEqual(themelist[theme_number], banned_ids[i]))
 			{
@@ -1031,6 +1038,7 @@ public Action OnRS_SearchForOrder(bool manual_question)
 	if (theme_number == -1)
 	{
 		delete kv;
+		nothing_error = true;
 		return false;
 	}
 	
@@ -1087,6 +1095,7 @@ public Action OnRS_SearchForOrder(bool manual_question)
 	
 	if (difficulty_number == -1)
 	{
+		banned_ids[fail_count] = g_currentThemeID;
 		return false;
 	}
 	
