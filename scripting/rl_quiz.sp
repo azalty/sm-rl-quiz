@@ -153,10 +153,34 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 			case 0:
 			{
 				// only random math questions
+				// false = random math
+				int fail_count;
+				while (!OnRS_SearchForOrder(false)) // if returns false, no "random" order was found in this theme
+				{
+					fail_count++;
+					if (fail_count >= 50)
+					{
+						CPrintToChatAll("ERROR: no 'random' order difficulty found after 50 tries.");
+						return;
+					}
+				}
+				OnRS_InitQuestionsTimer = CreateTimer(cvarOnRoundStart_Delay.FloatValue, OnRS_InitQuestions);
 			}
 			case 1:
 			{
 				// only manual questions
+				// true = manual
+				int fail_count;
+				while (!OnRS_SearchForOrder(false)) // if returns false, no "random" order was found in this theme
+				{
+					fail_count++;
+					if (fail_count >= 50)
+					{
+						CPrintToChatAll("ERROR: no 'manual' order difficulty found after 50 tries.");
+						return;
+					}
+				}
+				OnRS_InitQuestionsTimer = CreateTimer(cvarOnRoundStart_Delay.FloatValue, OnRS_InitQuestions);
 			}
 			default:
 			{
@@ -959,4 +983,99 @@ public Action OnRS_InitQuestions(Handle timer)
 {
 	InitQuestions(0);
 	OnRS_InitQuestionsTimer = null;
+}
+
+public Action OnRS_SearchForOrder(bool manual_question)
+{
+	char needed_order[32];
+	if (manual_question)
+	{
+		needed_order = "manual";
+	}
+	else
+	{
+		needed_order = "random";
+	}
+	
+	// Search for a random theme
+	KeyValues kv = new KeyValues("Rl_quiz");
+	char kvPath[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, kvPath, sizeof(kvPath), "configs/rl_quiz.cfg"); //Get cfg file
+	kv.ImportFromFile(kvPath);
+	kv.GotoFirstSubKey();
+	
+	char themelist[50][32]; // up to 50 themes
+	int theme_number = -1;
+	
+	do
+	{
+		theme_number++;
+		// Current key is a section. Browse it recursively.
+		
+		kv.GetString("id", themelist[theme_number], sizeof(themelist[]));
+		//LogMessage("random theme found: %s", themelist[theme_number]);
+		
+		//kv.GoBack();
+	} while (kv.GotoNextKey());
+	
+	kv.Rewind(); // set up to default for the next check
+	
+	//int chosen_theme_id = RoundToZero(GetURandomFloat() * (theme_number+0.9999999)); // choose a random theme from 0 to 'theme_number'
+	int chosen_theme_id = RoundToZero((GetURandomFloat() * (theme_number+0.9999999)));
+	//LogMessage("random float: %f", chosen_theme_id_f);
+	//LogMessage("random round: %i", chosen_theme_id);
+	//LogMessage("random theme selected: %s (total: %i)", themelist[chosen_theme_id], (theme_number+1));
+	g_currentThemeID = themelist[chosen_theme_id]; // set the new theme
+	
+	
+	// Let's find a random difficulty
+	kv.GotoFirstSubKey();
+	
+	char difficultylist[15][32]; // up to 15 difficulties
+	int difficulty_number = -1;
+	
+	// trying to find the Theme..
+	do
+	{
+		// Current key is a section. Browse it recursively.
+		
+		char theme_id[32];
+		kv.GetString("id", theme_id, sizeof(theme_id));
+		if (StrEqual(theme_id, g_currentThemeID))
+		{
+			break; // exit the loop, we are now in the good Theme
+		}
+		
+		//kv.GoBack();
+	} while (kv.GotoNextKey());
+	
+	// Listing all difficulties
+	kv.GotoFirstSubKey();
+	do
+	{
+		difficulty_number++;
+		
+		char param_order[32];
+		kv.GetString("order", param_order, sizeof(param_order));
+		if (StrEqual(param_order, needed_order))
+		{
+			kv.GetString("id", difficultylist[difficulty_number], sizeof(difficultylist[]));
+		}
+		else
+		{
+			difficulty_number--;
+		}
+	} while (kv.GotoNextKey());
+	
+	delete kv;
+	
+	if (difficulty_number == -1)
+	{
+		return false;
+	}
+	
+	int chosen_difficulty_id = RoundToZero((GetURandomFloat() * (difficulty_number+0.9999999)));
+	g_currentDifficultyID = difficultylist[chosen_difficulty_id]; // set the new theme
+	
+	return true;
 }
