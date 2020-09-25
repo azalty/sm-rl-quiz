@@ -21,6 +21,7 @@ public SharedPlugin __pl_Rl_quiz =
  * Use this event to give a reward if you set it to Custom.
  *
  * @param client	The client who got the reward.
+ * @param amount	The amount of currency/reward the client got.
  * @NoReturn
  */
-forward void Rl_quiz_OnReward(int client);
+forward void Rl_quiz_OnReward(int client, int amount);
