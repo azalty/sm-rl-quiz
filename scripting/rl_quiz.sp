@@ -225,7 +225,7 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 				
 				delete kv;
 				
-				int chosen_difficulty_id = RoundToZero((GetURandomFloat() * (theme_number+0.9999999)));
+				int chosen_difficulty_id = RoundToZero((GetURandomFloat() * (difficulty_number+0.9999999)));
 				g_currentDifficultyID = difficultylist[chosen_difficulty_id]; // set the new theme
 				
 				OnRS_InitQuestionsTimer = CreateTimer(cvarOnRoundStart_Delay.FloatValue, OnRS_InitQuestions);
