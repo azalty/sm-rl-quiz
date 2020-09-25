@@ -170,6 +170,7 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 			{
 				// only manual questions
 				// true = manual
+				char banned_ids[50][32];
 				int fail_count;
 				while (!OnRS_SearchForOrder(false)) // if returns false, no "random" order was found in this theme
 				{
@@ -1013,10 +1014,25 @@ public Action OnRS_SearchForOrder(bool manual_question)
 		// Current key is a section. Browse it recursively.
 		
 		kv.GetString("id", themelist[theme_number], sizeof(themelist[]));
+		for (int i; i >= fail_count; i++)
+		{
+			if (StrEqual(themelist[theme_number], banned_ids[i]))
+			{
+				theme_number--;
+				break;
+			}
+			
+		}
 		//LogMessage("random theme found: %s", themelist[theme_number]);
 		
 		//kv.GoBack();
 	} while (kv.GotoNextKey());
+	
+	if (theme_number == -1)
+	{
+		delete kv;
+		return false;
+	}
 	
 	kv.Rewind(); // set up to default for the next check
 	
