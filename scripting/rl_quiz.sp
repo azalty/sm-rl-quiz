@@ -536,37 +536,41 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 
 public int DIDMenuHandlerHandler(Menu menu, MenuAction action, int client, int itemNum) 
 {
-	if( action == MenuAction_Select ) 
+	switch (action)
 	{
-		int warden = warden_get();
-		if (client != warden)
-		{
-			//LogMessage("[!] Client isn't warden, closing menu");
-			delete menu;
-			return;
-		}
-		GetMenuItem(menu, itemNum, g_currentDifficultyID, sizeof(g_currentDifficultyID));
-		inPreQuiz = true;
-		isWardenQuiz = true;
-		InitQuestions(client);
-	}
-	if(action == MenuAction_Cancel)
-	{
-		if(itemNum==MenuCancel_ExitBack)
+		case MenuAction_Select:
 		{
 			int warden = warden_get();
 			if (client != warden)
 			{
+				//LogMessage("[!] Client isn't warden, closing menu");
 				delete menu;
 				return;
 			}
-			DOMenu(client,0);
+			GetMenuItem(menu, itemNum, g_currentDifficultyID, sizeof(g_currentDifficultyID));
+			inPreQuiz = true;
+			isWardenQuiz = true;
+			InitQuestions(client);
 		}
-		//LogMessage("Client %d's menu was cancelled.Reason: %d", client, itemNum); 
-	}
-	else if(action == MenuAction_End)
-	{
-		delete menu;
+		
+		case MenuAction_Cancel:
+		{
+			if(itemNum==MenuCancel_ExitBack)
+			{
+				int warden = warden_get();
+				if (client != warden)
+				{
+					delete menu;
+					return;
+				}
+				DOMenu(client,0);
+			}
+		}
+		
+		case MenuAction_End:
+		{
+			delete menu;
+		}
 	}
 }
 
