@@ -77,6 +77,14 @@
 		"fr"	"{1}{green}{2}{default} a trouvé la bonne réponse ! Le réponse était: {orchid}{3}{default} !"
 	}
 	
+	"ImpossibleWords"
+	{
+		// a list of words (separeted by ';') that people can write to say that there is no solution (if a number is divided by 0)
+		// it's up to you if you accept or not answers like "infinite" (https://en.wikipedia.org/wiki/Division_by_zero)
+		"en"	"impossible;infinite;error;inf;not possible"
+		"fr"	"impossible;infini;erreur;inf;pas possible"
+	}
+	
 	
 	// Translations for On Round Start mode
 	
