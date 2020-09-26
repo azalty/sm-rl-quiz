@@ -3,6 +3,8 @@ A fully configurable advanced quiz system
 
 **[-> Download here <-](https://github.com/rlevet/sm-rl-quiz/releases/latest)**
 
+**[-> Wiki/help here <-](https://github.com/rlevet/sm-rl-quiz/wiki)**
+
 ## Features
 - Highly configurable (and easy, since everything is explained!)
 - Easy integration (for custom rewards)
