@@ -11,6 +11,7 @@ A fully configurable advanced quiz system
 - Translations (Currently: English, French)
 - Quizes are divided by themes, itself divided by difficulties
 - Possibility to have multiple good answers for a question
+- Can generate random math questions
 - Up to 50 themes
   - Up to 15 difficulties per theme
     - Up to 50 questions per difficulty
