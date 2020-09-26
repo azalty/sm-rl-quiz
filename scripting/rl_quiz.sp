@@ -934,6 +934,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 					GiveRewards(client);
 					inQuiz = false; // no longer in quiz
 					delete questionExpireTimer;
+					break;
 				}
 			}
 		}
