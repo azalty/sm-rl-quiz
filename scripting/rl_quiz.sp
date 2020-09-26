@@ -81,8 +81,8 @@ public Plugin myinfo =
 {
 	name = "RL Quiz System",
 	author = "azalty/rlevet",
-	description = "A private jailbreak quiz system",
-	version = "0.9.0 beta",
+	description = "A fully configurable advanced quiz system",
+	version = "1.0.0",
 	url = "github.com/rlevet"
 }
 
