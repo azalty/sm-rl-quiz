@@ -5,6 +5,8 @@ A fully configurable advanced quiz system
 
 **[-> Wiki/help here <-](https://github.com/rlevet/sm-rl-quiz/wiki)**
 
+**[-> AlliedModders thread here <-](https://forums.alliedmods.net/showthread.php?t=327552)**
+
 ## Features
 - Highly configurable (and easy, since everything is explained!)
 - Easy integration (for custom rewards)
