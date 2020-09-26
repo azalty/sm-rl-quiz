@@ -1,5 +1,5 @@
 # sm-rl-quiz
-An advanced Quiz system that is fully configurable
+A fully configurable advanced quiz system
 
 **[-> Download here <-](https://github.com/rlevet/sm-rl-quiz/releases/latest)**
 
