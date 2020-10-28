@@ -58,6 +58,8 @@ ConVar cvarOnRoundStart_Questions;
 ConVar cvarOnRoundStart_Reward;
 ConVar cvarMyJailBreak_Core;
 
+KeyValues kv;
+
 /*
 Limitations:
 
@@ -82,7 +84,7 @@ public Plugin myinfo =
 	name = "RL Quiz System",
 	author = "azalty/rlevet",
 	description = "A fully configurable advanced quiz system",
-	version = "1.0.0",
+	version = "1.0.1",
 	url = "github.com/rlevet"
 }
 
@@ -109,6 +111,15 @@ public void OnPluginStart()
 	
 	// Translations
 	LoadTranslations("rl.quiz.phrases");
+	
+	// Init keyvalues
+	char kvPath[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, kvPath, sizeof(kvPath), "configs/rl_quiz.cfg"); //Get cfg file
+	kv = new KeyValues("Rl_quiz");
+	if (!kv.ImportFromFile(kvPath))
+	{
+		SetFailState("Unable to import configs/rl_quiz.cfg");
+	}
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -197,10 +208,7 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 				// everything
 				
 				// Search for a random theme
-				KeyValues kv = new KeyValues("Rl_quiz");
-				char kvPath[PLATFORM_MAX_PATH];
-				BuildPath(Path_SM, kvPath, sizeof(kvPath), "configs/rl_quiz.cfg"); //Get cfg file
-				kv.ImportFromFile(kvPath);
+				kv.Rewind();
 				kv.GotoFirstSubKey();
 				
 				char themelist[50][32]; // up to 50 themes
@@ -256,8 +264,6 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 					
 					kv.GetString("id", difficultylist[difficulty_number], sizeof(difficultylist[]));
 				} while (kv.GotoNextKey());
-				
-				delete kv;
 				
 				int chosen_difficulty_id = RoundToZero((GetURandomFloat() * (difficulty_number+0.9999999)));
 				g_currentDifficultyID = difficultylist[chosen_difficulty_id]; // set the new theme
@@ -352,11 +358,7 @@ public Action DOMenu(int client, int args)
 	
 	
 	// get themes
-	KeyValues kv = new KeyValues("Rl_quiz");
-	char kvPath[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, kvPath, sizeof(kvPath), "configs/rl_quiz.cfg"); //Get cfg file
-	kv.ImportFromFile(kvPath);
-	
+	kv.Rewind();
 	kv.GotoFirstSubKey();
 	
 	do
@@ -371,8 +373,6 @@ public Action DOMenu(int client, int args)
 		
 		//kv.GoBack();
 	} while (kv.GotoNextKey());
-	
-	delete kv;
 	// --
 	
 	menu.ExitButton = true;
@@ -403,10 +403,7 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 			// If user selected 'random theme'
 			if (StrEqual("core_random", g_currentThemeID))
 			{
-				KeyValues kv = new KeyValues("Rl_quiz");
-				char kvPath[PLATFORM_MAX_PATH];
-				BuildPath(Path_SM, kvPath, sizeof(kvPath), "configs/rl_quiz.cfg"); //Get cfg file
-				kv.ImportFromFile(kvPath);
+				kv.Rewind();
 				kv.GotoFirstSubKey();
 				
 				char themelist[50][32]; // up to 50 themes
@@ -423,8 +420,6 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 					//kv.GoBack();
 				} while (kv.GotoNextKey());
 				
-				delete kv;
-				
 				//int chosen_theme_id = RoundToZero(GetURandomFloat() * (theme_number+0.9999999)); // choose a random theme from 0 to 'theme_number'
 				float chosen_theme_id_f = (GetURandomFloat() * (theme_number+0.9999999));
 				int chosen_theme_id = RoundToZero(chosen_theme_id_f);
@@ -438,10 +433,7 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 			char theme_name[50];
 			
 			// get themes
-			KeyValues kv = new KeyValues("Rl_quiz");
-			char kvPath[PLATFORM_MAX_PATH];
-			BuildPath(Path_SM, kvPath, sizeof(kvPath), "configs/rl_quiz.cfg"); //Get cfg file
-			kv.ImportFromFile(kvPath);
+			kv.Rewind();
 			kv.GotoFirstSubKey();
 			
 			// trying to find the Theme..
@@ -483,8 +475,6 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 				
 				//kv.GoBack();
 			} while (kv.GotoNextKey());
-			
-			delete kv;
 			// --
 			
 			
@@ -579,10 +569,7 @@ public int DIDMenuHandlerHandler(Menu menu, MenuAction action, int client, int i
 public void InitQuestions(int client)
 {
 	// get themes
-	KeyValues kv = new KeyValues("Rl_quiz");
-	char kvPath[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, kvPath, sizeof(kvPath), "configs/rl_quiz.cfg"); //Get cfg file
-	kv.ImportFromFile(kvPath);
+	kv.Rewind();
 	kv.GotoFirstSubKey();
 	
 	char theme_name[50];
@@ -639,8 +626,6 @@ public void InitQuestions(int client)
 		int type_subtraction = kv.GetNum("type_subtraction");
 		int type_multiply = kv.GetNum("type_multiply");
 		int type_divide = kv.GetNum("type_divide");
-		
-		delete kv;
 		
 		// Now lets do a math question
 		if (isWardenQuiz)
@@ -776,8 +761,6 @@ public void InitQuestions(int client)
 				break;
 			}
 		}
-		
-		delete kv;
 		
 		int random_question = RoundToZero(GetURandomFloat() * (number_of_questions-1+0.9999999) + 1); // choose a random question from 1 to 'number_of_questions'
 		
@@ -1033,10 +1016,7 @@ public bool OnRS_SearchForOrder(bool manual_question)
 	}
 	
 	// Search for a random theme
-	KeyValues kv = new KeyValues("Rl_quiz");
-	char kvPath[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, kvPath, sizeof(kvPath), "configs/rl_quiz.cfg"); //Get cfg file
-	kv.ImportFromFile(kvPath);
+	kv.Rewind();
 	kv.GotoFirstSubKey();
 	
 	char themelist[50][32]; // up to 50 themes
@@ -1064,7 +1044,6 @@ public bool OnRS_SearchForOrder(bool manual_question)
 	
 	if (theme_number == -1)
 	{
-		delete kv;
 		nothing_error = true;
 		return false;
 	}
@@ -1117,8 +1096,6 @@ public bool OnRS_SearchForOrder(bool manual_question)
 			difficulty_number--;
 		}
 	} while (kv.GotoNextKey());
-	
-	delete kv;
 	
 	if (difficulty_number == -1)
 	{
