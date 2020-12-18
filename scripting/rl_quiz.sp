@@ -84,7 +84,7 @@ public Plugin myinfo =
 	name = "RL Quiz System",
 	author = "azalty/rlevet",
 	description = "A fully configurable advanced quiz system",
-	version = "1.0.1",
+	version = "1.0.2",
 	url = "github.com/rlevet"
 }
 
@@ -745,7 +745,7 @@ public void InitQuestions(int client)
 		char keytoget_q[16];
 		char keytoget_a[16];
 		
-		while (true)
+		do
 		{
 			number_of_questions++;
 			
@@ -754,13 +754,10 @@ public void InitQuestions(int client)
 			
 			kv.GetString(keytoget_q, manual_question[number_of_questions], sizeof(manual_question[]), "error! key not found");
 			kv.GetString(keytoget_a, manual_answer[number_of_questions], sizeof(manual_answer[]), "error! key not found");
-			
-			if (StrEqual(manual_question[number_of_questions], "error! key not found") || StrEqual(manual_answer[number_of_questions], "error! key not found"))
-			{
-				number_of_questions--;
-				break;
-			}
 		}
+		while (!(StrEqual(manual_question[number_of_questions], "error! key not found") || StrEqual(manual_answer[number_of_questions], "error! key not found")))
+		
+		number_of_questions--;
 		
 		int random_question = RoundToZero(GetURandomFloat() * (number_of_questions-1+0.9999999) + 1); // choose a random question from 1 to 'number_of_questions'
 		
@@ -889,7 +886,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		}
 	}
 
-	if ((((GetClientTeam(client) == 2) && isWardenQuiz) || (!isWardenQuiz)) && IsPlayerAlive(client))
+	if (((GetClientTeam(client) == 2) && isWardenQuiz && IsPlayerAlive(client)) || !isWardenQuiz)
 	{
 		//LogMessage("%N said '%s'", client, args[0]);
 		if (impossible)
