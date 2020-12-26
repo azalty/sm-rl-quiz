@@ -1,0 +1,119 @@
+"Phrases"
+{
+	// allows you to customise your currency name, for zeph store, I personally use a different currency name
+	// this is useful if you chosed Custom reward option
+	"CurrencyName"
+	{
+		"ru"	"кредитов"
+	}
+	
+	// allows you to customise the prefix if you want to
+	"Prefix"
+	{
+		"ru"	"{red}[{blue}Викторина{red}]{default} "
+	}
+	
+	"RandomTheme"
+	{
+		"ru"	"Случайная тема"
+	}
+	
+	"QuizIncoming"
+	{
+		// {1} = Prefix - {2} = theme - {3} = difficulty
+		"ru"	"{1} Приближается викторина: {green}{2} ({3}){default}!"
+	}
+	
+	"IfDecimal"
+	{
+		// {1} = Prefix
+		"ru"	"{1}Если результатом является десятичное значение, запишите ближайшее целое число!"
+	}
+	
+	"PrepareYourself"
+	{
+		// {1} = Prefix
+		"ru"	"{1}Приготовьтесь!"
+	}
+	
+	"NoOneFoundImpossible"
+	{
+		// {1} = Prefix
+		"ru"	"{1}Никто не нашёл правильного ответа! Ответ был такой: {orchid}невозможно{default}!"
+	}
+	
+	"NoOneFound"
+	{
+		// {1} = Prefix - {2} = answer
+		"ru"	"{1}Никто не нашёл правильного ответа! Ответ был такой: {orchid}{2}{default}!"
+	}
+	
+	"FoundImpossible"
+	{
+		// {1} = Prefix - {2} = playername
+		"ru"	"{1}{green}{2}{default} нашёл правильный ответ! Ответ был такой: {orchid}невозможно{default}!"
+	}
+	
+	"Found"
+	{
+		// {1} = Prefix - {2} = playername - {3} = answer
+		"ru"	"{1}{green}{2}{default} нашёл правильный ответ! Ответ был такой: {orchid}{3}{default}!"
+	}
+	
+	"ImpossibleWords"
+	{
+		// a list of words (separeted by ';') that people can write to say that there is no solution (if a number is divided by 0)
+		// it's up to you if you accept or not answers like "infinite" (https://en.wikipedia.org/wiki/Division_by_zero)
+		"ru"	"невозможно;бесконечно;ошибка;беск;не возможно"
+	}
+	
+	
+	// Translations for On Round Start mode
+	
+	"OnRS_YouGot"
+	{
+		// {1} = Prefix - {2} = amount of currency - {3} = CurrencyName
+		"ru"	"{1}Вы выиграли {gold}{2} {3}{default}!"
+	}
+	
+	
+	// Translations for MyJailbreak Warden mode
+	
+	"MyJB_WardenDisconnected"
+	{
+		// {1} = Prefix
+		"ru"	"{1}Надзиратель отключился. Отмена викторины."
+	}
+	
+	"MyJB_WardenLeftHisPost"
+	{
+		// {1} = Prefix
+		"ru"	"{1}Надзиратель покинул свой пост. Отмена викторины."
+	}
+	
+	"MyJB_MustBeWarden"
+	{
+		// {1} = Prefix
+		"ru"	"{1}Вы должны быть Надзирателем, чтобы начать викторину!"
+	}
+	
+	"MyJB_QuizAlreadyInProgress"
+	{
+		// {1} = Prefix
+		"ru"	"{1}Викторина уже идёт!"
+	}
+	
+	"MyJB_WardenDecided"
+	{
+		// {1} = Prefix - {2} = playername - {3} = theme - {4} = difficulty
+		"ru"	"{1} {blue}Надзиратель {2}{default} решил сделать викторину {green}{3} ({4}){default}."
+	}
+	
+	
+	// Translations for Dev related things
+	
+	"Dev_CantFromServerConsole"
+	{
+		"ru"	"Эту команду нельзя запустить через консоль сервера."
+	}
+}
