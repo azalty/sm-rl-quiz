@@ -5,17 +5,20 @@
 	"CurrencyName"
 	{
 		"en"	"credits"
+		"fr"	"crédits"
 	}
 	
 	// allows you to customise the prefix if you want to
 	"Prefix"
 	{
 		"en"	"{red}[{blue}Quiz{red}]{default} "
+		"fr"	"{red}[{blue}Quiz{red}]{default} "
 	}
 	
 	"RandomTheme"
 	{
 		"en"	"Random theme"
+		"fr"	"Thème au hasard"
 	}
 	
 	"QuizIncoming"
@@ -23,6 +26,7 @@
 		// {1} = Prefix - {2} = theme - {3} = difficulty
 		"#format"	"{1:t},{2:s},{3:s}"
 		"en"	"{1}A {green}{2} ({3}){default} quiz is coming!"
+		"fr"	"{1}Un quiz de {green}{2} ({3}){default} arrive !"
 	}
 	
 	"IfDecimal"
@@ -30,6 +34,7 @@
 		// {1} = Prefix
 		"#format"	"{1:t}"
 		"en"	"{1}If the result is a decimal value, write the nearest integer!"
+		"fr"	"{1}Si le résultat est une valeur décimale, écrivez l'entier le plus proche !"
 	}
 	
 	"PrepareYourself"
@@ -37,6 +42,7 @@
 		// {1} = Prefix
 		"#format"	"{1:t}"
 		"en"	"{1}Prepare yourself!"
+		"fr"	"{1}Préparez-vous !"
 	}
 	
 	"NoOneFoundImpossible"
@@ -44,6 +50,7 @@
 		// {1} = Prefix
 		"#format"	"{1:t}"
 		"en"	"{1}No one found the right answer! The answer was: {orchid}impossible{default}!"
+		"fr"	"{1}Personne n'a trouvé la bonne réponse ! La réponse était: {orchid}impossible{default} !"
 	}
 	
 	"NoOneFound"
@@ -51,6 +58,7 @@
 		// {1} = Prefix - {2} = answer
 		"#format"	"{1:t},{2:s}"
 		"en"	"{1}No one found the right answer! The answer was: {orchid}{2}{default}!"
+		"fr"	"{1}Personne n'a trouvé la bonne réponse ! La réponse était: {orchid}{2}{default} !"
 	}
 	
 	"FoundImpossible"
@@ -58,6 +66,7 @@
 		// {1} = Prefix - {2} = playername
 		"#format"	"{1:t},{2:s}"
 		"en"	"{1}{green}{2}{default} found the right answer! The answer was: {orchid}impossible{default}!"
+		"fr"	"{1}{green}{2}{default} a trouvé la bonne réponse ! Le réponse était: {orchid}impossible{default} !"
 	}
 	
 	"Found"
@@ -65,6 +74,7 @@
 		// {1} = Prefix - {2} = playername - {3} = answer
 		"#format"	"{1:t},{2:s},{3:s}"
 		"en"	"{1}{green}{2}{default} found the right answer! The answer was: {orchid}{3}{default}!"
+		"fr"	"{1}{green}{2}{default} a trouvé la bonne réponse ! Le réponse était: {orchid}{3}{default} !"
 	}
 	
 	"ImpossibleWords"
@@ -72,6 +82,7 @@
 		// a list of words (separeted by ';') that people can write to say that there is no solution (if a number is divided by 0)
 		// it's up to you if you accept or not answers like "infinite" (https://en.wikipedia.org/wiki/Division_by_zero)
 		"en"	"impossible;infinite;error;inf;not possible"
+		"fr"	"impossible;infini;erreur;inf;pas possible"
 	}
 	
 	
@@ -82,6 +93,7 @@
 		// {1} = Prefix - {2} = amount of currency - {3} = CurrencyName
 		"#format"	"{1:t},{2:i},{3:t}"
 		"en"	"{1}You won {gold}{2} {3}{default}!"
+		"fr"	"{1}Vous avez gagné {gold}{2} {3}{default} !"
 	}
 	
 	
@@ -92,6 +104,7 @@
 		// {1} = Prefix
 		"#format"	"{1:t}"
 		"en"	"{1}The Warden has disconnected. Cancelling the quiz."
+		"fr"	"{1}Le Chef CT s'est déconnecté. Annulation du quiz."
 	}
 	
 	"MyJB_WardenLeftHisPost"
@@ -99,6 +112,7 @@
 		// {1} = Prefix
 		"#format"	"{1:t}"
 		"en"	"{1}The Warden has left his post. Cancelling the quiz."
+		"fr"	"{1}Le Chef CT a quitté son poste. Annulation du quiz."
 	}
 	
 	"MyJB_MustBeWarden"
@@ -106,6 +120,7 @@
 		// {1} = Prefix
 		"#format"	"{1:t}"
 		"en"	"{1}You must be Warden to start a quiz!"
+		"fr"	"{1}Vous devez être Chef CT pour lancer un quiz !"
 	}
 	
 	"MyJB_QuizAlreadyInProgress"
@@ -113,6 +128,7 @@
 		// {1} = Prefix
 		"#format"	"{1:t}"
 		"en"	"{1}A quiz is already in progress!"
+		"fr"	"{1}Un quiz est déjà en cours !"
 	}
 	
 	"MyJB_WardenDecided"
@@ -120,6 +136,7 @@
 		// {1} = Prefix - {2} = playername - {3} = theme - {4} = difficulty
 		"#format"	"{1:t},{2:s},{3:s},{4:s}"
 		"en"	"{1}The {blue}Warden {2}{default} has decided to do a {green}{3} ({4}){default} quiz."
+		"fr"	"{1}Le {blue}Chef CT {2}{default} a décidé de faire un quiz de {green}{3} ({4}){default}."
 	}
 	
 	
@@ -128,5 +145,6 @@
 	"Dev_CantFromServerConsole"
 	{
 		"en"	"You cannot run this command through the server console."
+		"fr"	"Vous ne pouvez pas exécuter cette commande via la console du serveur."
 	}
 }
