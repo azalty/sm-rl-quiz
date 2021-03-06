@@ -84,7 +84,7 @@ public Plugin myinfo =
 	name = "RL Quiz System",
 	author = "azalty/rlevet",
 	description = "A fully configurable advanced quiz system",
-	version = "1.0.2",
+	version = "1.0.3",
 	url = "github.com/rlevet"
 }
 
@@ -568,6 +568,12 @@ public int DIDMenuHandlerHandler(Menu menu, MenuAction action, int client, int i
 
 public void InitQuestions(int client)
 {
+	// empty multipleAnswers string array, fixes issue #3 (github)
+	for (int i; i < sizeof(multipleAnswers); i++)
+	{
+		multipleAnswers[i][0] = '\0';
+	}
+	
 	// get themes
 	kv.Rewind();
 	kv.GotoFirstSubKey();
