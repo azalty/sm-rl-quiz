@@ -84,7 +84,7 @@ public Plugin myinfo =
 	name = "RL Quiz System",
 	author = "azalty/rlevet",
 	description = "A fully configurable advanced quiz system",
-	version = "1.0.3",
+	version = "1.0.4",
 	url = "github.com/rlevet"
 }
 
@@ -336,13 +336,12 @@ public Action DOMenu(int client, int args)
 	{
 		return Plugin_Handled;
 	}
-	int warden = warden_get();
 	if (!client)
 	{
 		ReplyToCommand(client, "%T", "Dev_CantFromServerConsole", LANG_SERVER);
 		return Plugin_Handled;
 	}
-	if (client != warden)
+	if (client != warden_get())
 	{
 		CReplyToCommand(client, "%t", "MyJB_MustBeWarden", "Prefix");
 		return Plugin_Handled;
@@ -354,6 +353,8 @@ public Action DOMenu(int client, int args)
 	}
 	Menu menu = new Menu(DIDMenuHandler);
 	menu.SetTitle("Quiz");
+	char display[64];
+	Format(display, sizeof(display), "%T", "RandomTheme", client);
 	menu.AddItem("core_random", "Random theme");
 	
 	
@@ -387,8 +388,7 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 	{
 		case MenuAction_Select:
 		{
-			int warden = warden_get();
-			if (client != warden)
+			if (client != warden_get())
 			{
 				//LogMessage("[!] Client isn't warden, closing menu");
 				delete menu;
@@ -507,8 +507,7 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 		{
 			if(itemNum==MenuCancel_ExitBack)
 			{
-				int warden = warden_get();
-				if (client != warden)
+				if (client != warden_get())
 				{
 					delete menu;
 					return 0;
@@ -542,6 +541,7 @@ public int DIDMenuHandlerHandler(Menu menu, MenuAction action, int client, int i
 			GetMenuItem(menu, itemNum, g_currentDifficultyID, sizeof(g_currentDifficultyID));
 			inPreQuiz = true;
 			isWardenQuiz = true;
+			currentWarden = warden;
 			InitQuestions(client);
 		}
 		
@@ -549,8 +549,7 @@ public int DIDMenuHandlerHandler(Menu menu, MenuAction action, int client, int i
 		{
 			if(itemNum==MenuCancel_ExitBack)
 			{
-				int warden = warden_get();
-				if (client != warden)
+				if (client != warden_get())
 				{
 					delete menu;
 					return;
@@ -795,8 +794,7 @@ public Action questionRead(Handle timer, int client)
 {
 	if (isWardenQuiz)
 	{
-		int warden = warden_get();
-		if (client != warden)
+		if (client != warden_get())
 		{
 			CPrintToChatAll("%T", "MyJB_WardenDisconnected", LANG_SERVER, "Prefix");
 			inPreQuiz = false;
@@ -815,8 +813,7 @@ public Action questionCount(Handle timer, int client)
 {
 	if (isWardenQuiz)
 	{
-		int warden = warden_get();
-		if (client != warden)
+		if (client != warden_get())
 		{
 			CPrintToChatAll("%T", "MyJB_WardenDisconnected", LANG_SERVER, "Prefix");
 			inPreQuiz = false;
@@ -830,10 +827,6 @@ public Action questionCount(Handle timer, int client)
 	{
 		inQuiz = true;
 		inPreQuiz = false;
-		if (isWardenQuiz)
-		{
-			currentWarden = client;
-		}
 		if (isMathQuestion)
 		{
 			CPrintToChatAll("%s%s = ?", prefix, question);
@@ -881,15 +874,11 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 		//LogMessage("Not in quiz");
 		return;
 	}
-	if (isWardenQuiz)
+	if ((isWardenQuiz) && (currentWarden != warden_get()))
 	{
-		int warden = warden_get();
-		if (currentWarden != warden)
-		{
-			CPrintToChatAll("%T", "MyJB_WardenDisconnected", LANG_SERVER, "Prefix");
-			inQuiz = false;
-			return;
-		}
+		CPrintToChatAll("%T", "MyJB_WardenDisconnected", LANG_SERVER, "Prefix");
+		inQuiz = false;
+		return;
 	}
 
 	if (((GetClientTeam(client) == 2) && isWardenQuiz && IsPlayerAlive(client)) || !isWardenQuiz)
