@@ -1,9 +1,9 @@
 # sm-rl-quiz
 A fully configurable advanced quiz system
 
-**[-> Download here <-](https://github.com/rlevet/sm-rl-quiz/releases/latest)**
+**[-> Download here <-](https://github.com/azalty/sm-rl-quiz/releases/latest)**
 
-**[-> Wiki/help here <-](https://github.com/rlevet/sm-rl-quiz/wiki)**
+**[-> Wiki/help here <-](https://github.com/azalty/sm-rl-quiz/wiki)**
 
 **[-> AlliedModders thread here <-](https://forums.alliedmods.net/showthread.php?t=327552)**
 
