@@ -2,6 +2,7 @@
 #include <sourcemod>
 #include <halflife>
 #include <colorvariables>
+#include <convar_class>
 #undef REQUIRE_PLUGIN
 #include <myjbwarden>
 #include <store/store-core>
@@ -50,13 +51,14 @@ Handle OnRS_InitQuestionsTimer;
 
 Handle gF_OnReward;
 
-ConVar cvarAnswerMode;
-ConVar cvarAnswerDelay;
-ConVar cvarOnRoundStart_Core;
-ConVar cvarOnRoundStart_Delay;
-ConVar cvarOnRoundStart_Questions;
-ConVar cvarOnRoundStart_Reward;
-ConVar cvarMyJailBreak_Core;
+Convar cvarAnswerMode;
+Convar cvarAnswerDelay;
+Convar cvarOnRoundStart_Core;
+Convar cvarOnRoundStart_Delay;
+Convar cvarOnRoundStart_MinPlayers;
+Convar cvarOnRoundStart_Questions;
+Convar cvarOnRoundStart_Reward;
+Convar cvarMyJailBreak_Core;
 
 KeyValues kv;
 
@@ -82,25 +84,26 @@ Because Zephyrus Store doesn't compile in SM 1.10 and that I want this version, 
 public Plugin myinfo = 
 {
 	name = "RL Quiz System",
-	author = "azalty/rlevet",
-	description = "A fully configurable advanced quiz system",
-	version = "1.0.4",
-	url = "github.com/rlevet"
+	author = "azalty",
+	description = "A fully configurable and advanced quiz system",
+	version = "1.0.5",
+	url = "github.com/azalty"
 }
 
 public void OnPluginStart()
 {
 	// Cvars
-	cvarAnswerMode = CreateConVar("rl_quiz_answer", "0", "When the answer is found... 0 = ..write the first answer in the list (the first answer should be the best formulated one) | 1 = ..write the answer that the client found", _, true, 0.0, true, 1.0);
-	cvarAnswerDelay = CreateConVar("rl_quiz_delay", "30.0", "Delay in seconds people have to answer a question", _, true, 5.0, true, 60.0);
-	cvarOnRoundStart_Core = CreateConVar("rl_quiz_onroundstart_core", "0", "0 = Disabled | 1 = Enable this mode. It will send a Quiz at the start of the round", _, true, 0.0, true, 1.0);
-	cvarOnRoundStart_Delay = CreateConVar("rl_quiz_onroundstart_delay", "5.0", "Delay in seconds after Round Start to send the Quiz", _, true, 1.0, true, 90.0);
-	cvarOnRoundStart_Questions = CreateConVar("rl_quiz_onroundstart_questions", "2", "0 = Only send random math questions ('order random') | 1 = Only send manual questions ('order manuel') | 2 = Send everything", _, true, 0.0, true, 2.0);
-	cvarOnRoundStart_Reward = CreateConVar("rl_quiz_onroundstart_reward", "0", "0 = No reward | 1 = Zephyrus store | 2 = SM Store | 3 = Custom (use the forward and include rl_quiz)", _, true, 0.0, true, 3.0);
-	cvarMyJailBreak_Core = CreateConVar("rl_quiz_myjailbreak_core", "0", "0 = Disabled | 1 = Enable this mode. It will allow the warden to use the !quiz command to start a Quiz. (REQUIRES MyJailBreak Warden module)", _, true, 0.0, true, 1.0);
+	cvarAnswerMode = new Convar("rl_quiz_answer", "0", "When the answer is found... 0 = ..write the first answer in the list (the first answer should be the best formulated one) | 1 = ..write the answer that the client found", _, true, 0.0, true, 1.0);
+	cvarAnswerDelay = new Convar("rl_quiz_delay", "30.0", "Delay in seconds people have to answer a question", _, true, 5.0, true, 60.0);
+	cvarOnRoundStart_Core = new Convar("rl_quiz_onroundstart_core", "0", "0 = Disabled | 1 = Enable this mode. It will send a Quiz at the start of the round", _, true, 0.0, true, 1.0);
+	cvarOnRoundStart_Delay = new Convar("rl_quiz_onroundstart_delay", "5.0", "Delay in seconds after Round Start to send the Quiz", _, true, 1.0, true, 90.0);
+	cvarOnRoundStart_MinPlayers = new Convar("rl_quiz_onroundstart_minplayers", "2", "Minimum number of players that must be connected in order for the OnRoundStart mode to be enabled", _, true, 0.0);
+	cvarOnRoundStart_Questions = new Convar("rl_quiz_onroundstart_questions", "2", "0 = Only send random math questions ('order random') | 1 = Only send manual questions ('order manuel') | 2 = Send everything", _, true, 0.0, true, 2.0);
+	cvarOnRoundStart_Reward = new Convar("rl_quiz_onroundstart_reward", "0", "0 = No reward | 1 = Zephyrus store | 2 = SM Store | 3 = Custom (use the forward and include rl_quiz)", _, true, 0.0, true, 3.0);
+	cvarMyJailBreak_Core = new Convar("rl_quiz_myjailbreak_core", "0", "0 = Disabled | 1 = Enable this mode. It will allow the warden to use the !quiz command to start a Quiz. (REQUIRES MyJailBreak Warden module)", _, true, 0.0, true, 1.0);
 	
-	// Auto generate config file
-	AutoExecConfig();
+	// Auto generate and load config file
+	Convar.CreateConfig("rl_quiz");
 	
 	// Console cmds
 	RegConsoleCmd("sm_quiz", DOMenu);
@@ -164,6 +167,19 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 	
 	if (cvarOnRoundStart_Core.BoolValue)
 	{
+		if (cvarOnRoundStart_MinPlayers.BoolValue)
+		{
+			int playerCount;
+			for (int i = 1; i <= MaxClients; i++)
+			{
+				if (IsClientInGame(i) && !IsFakeClient(i))
+					playerCount++;
+			}
+			if (playerCount < cvarOnRoundStart_MinPlayers.IntValue)
+				return;
+		}
+		
+		
 		inPreQuiz = true; // blocks any tentative to start a !quiz
 		isWardenQuiz = false; // prevents any call and reference to Warden
 		
