@@ -86,7 +86,7 @@ public Plugin myinfo =
 	name = "RL Quiz System",
 	author = "azalty",
 	description = "A fully configurable and advanced quiz system",
-	version = "1.0.5",
+	version = "1.0.6",
 	url = "github.com/azalty"
 }
 
@@ -103,7 +103,7 @@ public void OnPluginStart()
 	cvarMyJailBreak_Core = new Convar("rl_quiz_myjailbreak_core", "0", "0 = Disabled | 1 = Enable this mode. It will allow the warden to use the !quiz command to start a Quiz. (REQUIRES MyJailBreak Warden module)", _, true, 0.0, true, 1.0);
 	
 	// Auto generate and load config file
-	Convar.CreateConfig("rl_quiz");
+	Convar.CreateConfig("plugin.rl_quiz");
 	
 	// Console cmds
 	RegConsoleCmd("sm_quiz", DOMenu);
