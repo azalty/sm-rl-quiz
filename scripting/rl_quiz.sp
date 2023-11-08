@@ -16,7 +16,7 @@ this plugin needs:
 - Sourcemod Store (store-core.inc: updated version - https://forums.alliedmods.net/showthread.php?t=255418)
 You will also need this fix: https://github.com/SourceMod-Store/Sourcemod-Store/pull/11
 
-Compiled using SM 1.10
+Compiled using SM 1.11
 */
 
 // global variables, so command cannot be run simultaneously
@@ -35,7 +35,7 @@ bool isMathQuestion;
 bool isWardenQuiz;
 int reward;
 
-bool gp_storeCore;
+bool g_bStoreCore;
 
 // OnRS 'random/manual questions only' variables
 char banned_ids[50][32];
@@ -58,6 +58,7 @@ Convar cvarOnRoundStart_Delay;
 Convar cvarOnRoundStart_MinPlayers;
 Convar cvarOnRoundStart_Questions;
 Convar cvarOnRoundStart_Reward;
+Convar cvarOnRoundStart_Warmup;
 Convar cvarMyJailBreak_Core;
 
 KeyValues kv;
@@ -86,7 +87,7 @@ public Plugin myinfo =
 	name = "RL Quiz System",
 	author = "azalty",
 	description = "A fully configurable and advanced quiz system",
-	version = "1.0.6",
+	version = "1.1.0",
 	url = "github.com/azalty"
 }
 
@@ -98,15 +99,16 @@ public void OnPluginStart()
 	cvarOnRoundStart_Core = new Convar("rl_quiz_onroundstart_core", "0", "0 = Disabled | 1 = Enable this mode. It will send a Quiz at the start of the round", _, true, 0.0, true, 1.0);
 	cvarOnRoundStart_Delay = new Convar("rl_quiz_onroundstart_delay", "5.0", "Delay in seconds after Round Start to send the Quiz", _, true, 1.0, true, 90.0);
 	cvarOnRoundStart_MinPlayers = new Convar("rl_quiz_onroundstart_minplayers", "2", "Minimum number of players that must be connected in order for the OnRoundStart mode to be enabled", _, true, 0.0);
-	cvarOnRoundStart_Questions = new Convar("rl_quiz_onroundstart_questions", "2", "0 = Only send random math questions ('order random') | 1 = Only send manual questions ('order manuel') | 2 = Send everything", _, true, 0.0, true, 2.0);
+	cvarOnRoundStart_Questions = new Convar("rl_quiz_onroundstart_questions", "2", "0 = Only send random math questions ('order random') | 1 = Only send manual questions ('order manual') | 2 = Send everything", _, true, 0.0, true, 2.0);
 	cvarOnRoundStart_Reward = new Convar("rl_quiz_onroundstart_reward", "0", "0 = No reward | 1 = Zephyrus store | 2 = SM Store | 3 = Custom (use the forward and include rl_quiz)", _, true, 0.0, true, 3.0);
+	cvarOnRoundStart_Warmup = new Convar("rl_quiz_onroundstart_warmup", "0", "0 = Don't start a quiz on warmup | 1 = Start a quiz on warmup", _, true, 0.0, true, 1.0);
 	cvarMyJailBreak_Core = new Convar("rl_quiz_myjailbreak_core", "0", "0 = Disabled | 1 = Enable this mode. It will allow the warden to use the !quiz command to start a Quiz. (REQUIRES MyJailBreak Warden module)", _, true, 0.0, true, 1.0);
 	
 	// Auto generate and load config file
 	Convar.CreateConfig("plugin.rl_quiz");
 	
 	// Console cmds
-	RegConsoleCmd("sm_quiz", DOMenu);
+	RegConsoleCmd("sm_quiz", Cmd_QuizMenu);
 	
 	// Events
 	HookEvent("round_start", OnRoundStart);
@@ -136,26 +138,26 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnAllPluginsLoaded()
 {
-	gp_storeCore = LibraryExists("store/store-core");
+	g_bStoreCore = LibraryExists("store-core");
 }
 
 public void OnLibraryAdded(const char[] name)
 {
-	if (StrEqual(name, "store/store-core"))
+	if (StrEqual(name, "store-core"))
 	{
-		gp_storeCore = true;
+		g_bStoreCore = true;
 	}
 }
 
 public void OnLibraryRemoved(const char[] name)
 {
-	if (StrEqual(name, "store/store-core"))
+	if (StrEqual(name, "store-core"))
 	{
-		gp_storeCore = false;
+		g_bStoreCore = false;
 	}
 }
 
-public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
+void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 {
 	inPreQuiz = false;
 	inQuiz = false;
@@ -179,12 +181,20 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 				return;
 		}
 		
+		// Check if warmup
+		if (!cvarOnRoundStart_Warmup.BoolValue && GameRules_GetProp("m_bWarmupPeriod") == 1)
+		{
+			return;
+		}
 		
 		inPreQuiz = true; // blocks any tentative to start a !quiz
 		isWardenQuiz = false; // prevents any call and reference to Warden
 		
 		switch (cvarOnRoundStart_Questions.IntValue)
 		{
+			// fail_count represents the size of the banned_ids global variable, which contains the IDs of themes that have already been randomly picked and browsed, and do not contain any "random"/"manual" difficulty.
+			// ^ only applicable for case 0 and 1
+			// fail_count is reset upon entering those cases. It's a bit hard to understand what I tried to do here, but you'll understand eventually.
 			case 0:
 			{
 				// only random math questions
@@ -193,10 +203,12 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 				nothing_error = false;
 				while (!OnRS_SearchForOrder(false)) // if returns false, no "random" order was found in this theme
 				{
-					fail_count++;
-					if (nothing_error)
+					fail_count++; 
+					if (nothing_error) // No difficulty with 'order' set to 'random' exist.
 					{
-						CPrintToChatAll("ERROR: no 'random' order difficulty found in %i themes.", fail_count);
+						LogError("no 'random' order difficulty found in %i themes. Verify the value of rl_quiz_onroundstart_questions", fail_count);
+						LogMessage("ERROR: rl_quiz_onroundstart_questions is set up to only accept random math questions, but you don't have any set up!");
+						CPrintToChatAll("%tERROR: no 'random' order difficulty found in %i themes.", "Prefix", fail_count);
 						return;
 					}
 				}
@@ -208,12 +220,14 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 				// true = manual
 				fail_count = 0;
 				nothing_error = false;
-				while (!OnRS_SearchForOrder(false)) // if returns false, no "random" order was found in this theme
+				while (!OnRS_SearchForOrder(true)) // if returns false, no "manual" order was found in this theme
 				{
 					fail_count++;
-					if (nothing_error)
+					if (nothing_error) // No difficulty with 'order' set to 'manual' exist.
 					{
-						CPrintToChatAll("ERROR: no 'manual' order difficulty found in %i themes.", fail_count);
+						LogError("no 'manual' order difficulty found in %i themes. Verify the value of rl_quiz_onroundstart_questions", fail_count);
+						LogMessage("ERROR: rl_quiz_onroundstart_questions is set up to only accept manual questions, but you don't have any set up!");
+						CPrintToChatAll("%tERROR: no 'manual' order difficulty found in %i themes.", "Prefix", fail_count);
 						return;
 					}
 				}
@@ -290,7 +304,7 @@ public void OnRoundStart(Handle event, const char[] name, bool dontBroadcast)
 	}
 }
 
-public void OnRoundEnd(Handle event, const char[] name, bool dontBroadcast)
+void OnRoundEnd(Handle event, const char[] name, bool dontBroadcast)
 {
 	inPreQuiz = false;
 	inQuiz = false;
@@ -346,7 +360,7 @@ public void warden_OnWardenRemoved(int client)
 	}
 }
 
-public Action DOMenu(int client, int args)
+public Action Cmd_QuizMenu(int client, int args)
 {
 	if (!cvarMyJailBreak_Core.BoolValue)
 	{
@@ -367,11 +381,11 @@ public Action DOMenu(int client, int args)
 		CReplyToCommand(client, "%t", "MyJB_QuizAlreadyInProgress", "Prefix");
 		return Plugin_Handled;
 	}
-	Menu menu = new Menu(DIDMenuHandler);
+	Menu menu = new Menu(ThemeChoiceMenuHandler);
 	menu.SetTitle("Quiz");
 	char display[64];
-	Format(display, sizeof(display), "%T", "RandomTheme", client);
-	menu.AddItem("core_random", "Random theme");
+	FormatEx(display, sizeof(display), "%T", "RandomTheme", client);
+	menu.AddItem("core_random", display);
 	
 	
 	// get themes
@@ -393,12 +407,12 @@ public Action DOMenu(int client, int args)
 	// --
 	
 	menu.ExitButton = true;
-	menu.Display(client,MENU_TIME_FOREVER);
+	menu.Display(client, MENU_TIME_FOREVER);
 	
 	return Plugin_Handled;
 }
 
-public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum) 
+public int ThemeChoiceMenuHandler(Menu menu, MenuAction action, int client, int itemNum) 
 {
 	switch (action)
 	{
@@ -413,7 +427,7 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 			//char info[32];
 			
 			//GetMenuItem(menu, itemNum, info, sizeof(info));
-			GetMenuItem(menu, itemNum, g_currentThemeID, sizeof(g_currentThemeID));
+			menu.GetItem(itemNum, g_currentThemeID, sizeof(g_currentThemeID));
 			
 			
 			// If user selected 'random theme'
@@ -469,7 +483,7 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 			} while (kv.GotoNextKey());
 			
 			// -- Lets quickly create the menu so we can add difficulties
-			Menu menu2 = new Menu(DIDMenuHandlerHandler);
+			Menu menu2 = new Menu(DifficultyChoiceMenuHandler);
 			menu2.SetTitle(theme_name);
 			//LogMessage("menu pre created");
 			// --
@@ -496,7 +510,7 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 			
 			menu2.ExitButton = true;
 			menu2.ExitBackButton = true;
-			if (menu2.Display(client,MENU_TIME_FOREVER))
+			if (menu2.Display(client, MENU_TIME_FOREVER))
 			{
 				//LogMessage("Menu should be displayed");
 			}
@@ -521,14 +535,14 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 		
 		case MenuAction_Cancel:
 		{
-			if(itemNum==MenuCancel_ExitBack)
+			if (itemNum == MenuCancel_ExitBack)
 			{
 				if (client != warden_get())
 				{
 					delete menu;
 					return 0;
 				}
-				DOMenu(client,0);
+				Cmd_QuizMenu(client, 0);
 			}
 			//LogMessage("Client %d's menu was cancelled.Reason: %d", client, itemNum); 
 		}
@@ -541,7 +555,7 @@ public int DIDMenuHandler(Menu menu, MenuAction action, int client, int itemNum)
 	return 0;
 }
 
-public int DIDMenuHandlerHandler(Menu menu, MenuAction action, int client, int itemNum) 
+int DifficultyChoiceMenuHandler(Menu menu, MenuAction action, int client, int itemNum) 
 {
 	switch (action)
 	{
@@ -552,9 +566,9 @@ public int DIDMenuHandlerHandler(Menu menu, MenuAction action, int client, int i
 			{
 				//LogMessage("[!] Client isn't warden, closing menu");
 				delete menu;
-				return;
+				return 0;
 			}
-			GetMenuItem(menu, itemNum, g_currentDifficultyID, sizeof(g_currentDifficultyID));
+			menu.GetItem(itemNum, g_currentDifficultyID, sizeof(g_currentDifficultyID));
 			inPreQuiz = true;
 			isWardenQuiz = true;
 			currentWarden = warden;
@@ -563,14 +577,14 @@ public int DIDMenuHandlerHandler(Menu menu, MenuAction action, int client, int i
 		
 		case MenuAction_Cancel:
 		{
-			if(itemNum==MenuCancel_ExitBack)
+			if (itemNum == MenuCancel_ExitBack)
 			{
 				if (client != warden_get())
 				{
 					delete menu;
-					return;
+					return 0;
 				}
-				DOMenu(client,0);
+				Cmd_QuizMenu(client, 0);
 			}
 		}
 		
@@ -579,6 +593,7 @@ public int DIDMenuHandlerHandler(Menu menu, MenuAction action, int client, int i
 			delete menu;
 		}
 	}
+	return 0;
 }
 
 public void InitQuestions(int client)
@@ -806,7 +821,7 @@ public void InitQuestions(int client)
 	}
 }
 
-public Action questionRead(Handle timer, int client)
+Action questionRead(Handle timer, int client)
 {
 	if (isWardenQuiz)
 	{
@@ -815,7 +830,7 @@ public Action questionRead(Handle timer, int client)
 			CPrintToChatAll("%T", "MyJB_WardenDisconnected", LANG_SERVER, "Prefix");
 			inPreQuiz = false;
 			questionReadTimer = null;
-			return;
+			return Plugin_Stop;
 		}
 	}
 	
@@ -823,9 +838,10 @@ public Action questionRead(Handle timer, int client)
 	questionCountInt = 4;
 	questionCountTimer = CreateTimer(1.0, questionCount, client, TIMER_REPEAT);
 	questionReadTimer = null;
+	return Plugin_Stop;
 }
 
-public Action questionCount(Handle timer, int client)
+Action questionCount(Handle timer, int client)
 {
 	if (isWardenQuiz)
 	{
@@ -862,7 +878,7 @@ public Action questionCount(Handle timer, int client)
 	return Plugin_Continue;
 }
 
-public Action questionExpire(Handle timer, int client)
+Action questionExpire(Handle timer, int client)
 {
 	if (inQuiz) // we never know
 	{
@@ -877,24 +893,25 @@ public Action questionExpire(Handle timer, int client)
 	}
 	inQuiz = false;
 	questionExpireTimer = null;
+	return Plugin_Stop;
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] args) 
 {
 	if (!client) // we never know
 	{
-		return;
+		return Plugin_Continue;
 	}
 	if (!inQuiz)
 	{
 		//LogMessage("Not in quiz");
-		return;
+		return Plugin_Continue;
 	}
 	if ((isWardenQuiz) && (currentWarden != warden_get()))
 	{
 		CPrintToChatAll("%T", "MyJB_WardenDisconnected", LANG_SERVER, "Prefix");
 		inQuiz = false;
-		return;
+		return Plugin_Continue;
 	}
 
 	if (((GetClientTeam(client) == 2) && isWardenQuiz && IsPlayerAlive(client)) || !isWardenQuiz)
@@ -959,6 +976,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			}
 		}
 	}
+	return Plugin_Continue;
 }
 
 public void GiveRewards(int client)
@@ -975,11 +993,13 @@ public void GiveRewards(int client)
 	{
 		case 1:
 		{
-			ServerCommand("sm_givejetons #%i %i", GetClientUserId(client), reward); // as including zeph store breaks everything, here is an alternative
+			ServerCommand("sm_givecredits #%i %i", GetClientUserId(client), reward); // as including zeph store breaks everything, here is an alternative
+			// Can't include both stores because those devs didn't choose unique names, and named all their functions "Store_SOMETHING" and it breaks everything. I'm mad.
+			//Store_SetClientCredits(client, Store_GetClientCredits(client) + reward);
 		}
 		case 2:
 		{
-			if (gp_storeCore)
+			if (g_bStoreCore)
 			{
 				int accountId = GetSteamAccountID(client);
 				Store_GiveCredits(accountId, reward, INVALID_FUNCTION, 0);
@@ -1005,13 +1025,14 @@ public void GiveRewards(int client)
 	CPrintToChat(client, "%t", "OnRS_YouGot", "Prefix", reward, "CurrencyName");
 }
 
-public Action OnRS_InitQuestions(Handle timer)
+Action OnRS_InitQuestions(Handle timer)
 {
 	InitQuestions(0);
 	OnRS_InitQuestionsTimer = null;
+	return Plugin_Stop;
 }
 
-public bool OnRS_SearchForOrder(bool manual_question)
+bool OnRS_SearchForOrder(bool manual_question)
 {
 	char needed_order[32];
 	if (manual_question)
@@ -1030,12 +1051,15 @@ public bool OnRS_SearchForOrder(bool manual_question)
 	char themelist[50][32]; // up to 50 themes
 	int theme_number = -1;
 	
+	// List all themes IDs in the themelist array
 	do
 	{
 		theme_number++;
 		// Current key is a section. Browse it recursively.
 		
 		kv.GetString("id", themelist[theme_number], sizeof(themelist[]));
+		// Check if the theme ID is in the banned_ids array. The banned_ids array contains theme IDs that do not have any difficulty with 'order' set to needed_order ('random'/'manual')
+		// banned_ids is populated a bit later this function (OnRS_SearchForOrder) 
 		for (int i; i < fail_count; i++)
 		{
 			if (StrEqual(themelist[theme_number], banned_ids[i]))
@@ -1105,8 +1129,9 @@ public bool OnRS_SearchForOrder(bool manual_question)
 		}
 	} while (kv.GotoNextKey());
 	
-	if (difficulty_number == -1)
+	if (difficulty_number == -1) // In this theme, no difficulty has 'order' set to needed_order ('random'/'manual')
 	{
+		// Add the theme ID to the banned_ids array so that it isn't picked in the next iteration of this function.
 		banned_ids[fail_count] = g_currentThemeID;
 		return false;
 	}

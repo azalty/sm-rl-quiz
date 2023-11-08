@@ -7,6 +7,7 @@
 		"en"	"credits"
 		"fr"	"crédits"
 		"ru"	"кредитов"
+		"pt"	"créditos"
 	}
 	
 	// allows you to customise the prefix if you want to
@@ -15,6 +16,7 @@
 		"en"	"{red}[{blue}Quiz{red}]{default} "
 		"fr"	"{red}[{blue}Quiz{red}]{default} "
 		"ru"	"{red}[{blue}Викторина{red}]{default} "
+		"pt"	"{red}[{blue}Quiz{red}]{default} "
 	}
 	
 	"RandomTheme"
@@ -22,6 +24,7 @@
 		"en"	"Random theme"
 		"fr"	"Thème au hasard"
 		"ru"	"Случайная тема"
+		"pt"	"Tema aleatório"
 	}
 	
 	"QuizIncoming"
@@ -31,6 +34,7 @@
 		"en"	"{1}A {green}{2} ({3}){default} quiz is coming!"
 		"fr"	"{1}Un quiz de {green}{2} ({3}){default} arrive !"
 		"ru"	"{1}Приближается викторина: {green}{2} ({3}){default}!"
+		"pt"	"{1}Um quiz do tema {green}{2} ({3}){default} está vindo!"
 	}
 	
 	"IfDecimal"
@@ -40,6 +44,7 @@
 		"en"	"{1}If the result is a decimal value, write the nearest integer!"
 		"fr"	"{1}Si le résultat est une valeur décimale, écrivez l'entier le plus proche !"
 		"ru"	"{1}Если результатом является десятичное значение, запишите ближайшее целое число!"
+		"pt"	"{1}Se o resultado for um valor decimal, escreva o número inteiro mais próximo!"
 	}
 	
 	"PrepareYourself"
@@ -49,6 +54,7 @@
 		"en"	"{1}Prepare yourself!"
 		"fr"	"{1}Préparez-vous !"
 		"ru"	"{1}Приготовьтесь!"
+		"pt"	"{1}Se prepare!"
 	}
 	
 	"NoOneFoundImpossible"
@@ -58,6 +64,7 @@
 		"en"	"{1}No one found the right answer! The answer was: {orchid}impossible{default}!"
 		"fr"	"{1}Personne n'a trouvé la bonne réponse ! La réponse était: {orchid}impossible{default} !"
 		"ru"	"{1}Никто не нашёл правильного ответа! Ответ был такой: {orchid}невозможно{default}!"
+		"pt"	"{1}Ninguém achou a resposta certa! A resposta é: {orchid}impossível{default}!"
 	}
 	
 	"NoOneFound"
@@ -67,6 +74,7 @@
 		"en"	"{1}No one found the right answer! The answer was: {orchid}{2}{default}!"
 		"fr"	"{1}Personne n'a trouvé la bonne réponse ! La réponse était: {orchid}{2}{default} !"
 		"ru"	"{1}Никто не нашёл правильного ответа! Ответ был такой: {orchid}{2}{default}!"
+		"pt"	"{1}Ninguém achou a resposta certa! A resposta é: {orchid}{2}{default}!"
 	}
 	
 	"FoundImpossible"
@@ -76,6 +84,7 @@
 		"en"	"{1}{green}{2}{default} found the right answer! The answer was: {orchid}impossible{default}!"
 		"fr"	"{1}{green}{2}{default} a trouvé la bonne réponse ! Le réponse était: {orchid}impossible{default} !"
 		"ru"	"{1}{green}{2}{default} нашёл правильный ответ! Ответ был такой: {orchid}невозможно{default}!"
+		"pt"    "{1}{green}{2}{default} achou a resposta certa! A resposta era: {orchid}impossível{default}!"
 	}
 	
 	"Found"
@@ -94,6 +103,7 @@
 		"en"	"impossible;infinite;error;inf;not possible"
 		"fr"	"impossible;infini;erreur;inf;pas possible"
 		"ru"	"невозможно;бесконечно;ошибка;беск;не возможно"
+		"pt"	"impossível;infinito;erro;inf;não possível"
 	}
 	
 	
@@ -106,6 +116,7 @@
 		"en"	"{1}You won {gold}{2} {3}{default}!"
 		"fr"	"{1}Vous avez gagné {gold}{2} {3}{default} !"
 		"ru"	"{1}Вы выиграли {gold}{2} {3}{default}!"
+		"pt"	"{1} você ganhou {gold}{2} {3}{default}!"
 	}
 	
 	
@@ -118,6 +129,7 @@
 		"en"	"{1}The Warden has disconnected. Cancelling the quiz."
 		"fr"	"{1}Le Chef CT s'est déconnecté. Annulation du quiz."
 		"ru"	"{1}Надзиратель отключился. Отмена викторины."
+		"pt"	"{1}O Chefe desconectou. Cancelando o quiz."
 	}
 	
 	"MyJB_WardenLeftHisPost"
@@ -127,6 +139,7 @@
 		"en"	"{1}The Warden has left his post. Cancelling the quiz."
 		"fr"	"{1}Le Chef CT a quitté son poste. Annulation du quiz."
 		"ru"	"{1}Надзиратель покинул свой пост. Отмена викторины."
+		"pt"	"{1}O Chefe saiu de seu posto. Cancelando o quiz."
 	}
 	
 	"MyJB_MustBeWarden"
@@ -136,6 +149,7 @@
 		"en"	"{1}You must be Warden to start a quiz!"
 		"fr"	"{1}Vous devez être Chef CT pour lancer un quiz !"
 		"ru"	"{1}Вы должны быть Надзирателем, чтобы начать викторину!"
+		"pt"	"{1}Você tem que ser um chefe para iniciar um quiz!"
 	}
 	
 	"MyJB_QuizAlreadyInProgress"
@@ -145,6 +159,7 @@
 		"en"	"{1}A quiz is already in progress!"
 		"fr"	"{1}Un quiz est déjà en cours !"
 		"ru"	"{1}Викторина уже идёт!"
+		"pt"	"{1}Um quiz está em progresso"
 	}
 	
 	"MyJB_WardenDecided"
@@ -154,6 +169,7 @@
 		"en"	"{1}The {blue}Warden {2}{default} has decided to do a {green}{3} ({4}){default} quiz."
 		"fr"	"{1}Le {blue}Chef CT {2}{default} a décidé de faire un quiz de {green}{3} ({4}){default}."
 		"ru"	"{1} {blue}Надзиратель {2}{default} решил сделать викторину {green}{3} ({4}){default}."
+		"pt"	"{1}O {blue}Chefe {2}{default} deicidiu fazer um quiz {green}{3} ({4}){default}."
 	}
 	
 	
@@ -164,5 +180,6 @@
 		"en"	"You cannot run this command through the server console."
 		"fr"	"Vous ne pouvez pas exécuter cette commande via la console du serveur."
 		"ru"	"Эту команду нельзя запустить через консоль сервера."
+		"pt"	"Você não pode executar este comando pelo console do servidor."
 	}
 }
