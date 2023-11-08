@@ -94,6 +94,7 @@
 		"en"	"{1}{green}{2}{default} found the right answer! The answer was: {orchid}{3}{default}!"
 		"fr"	"{1}{green}{2}{default} a trouvé la bonne réponse ! Le réponse était: {orchid}{3}{default} !"
 		"ru"	"{1}{green}{2}{default} нашёл правильный ответ! Ответ был такой: {orchid}{3}{default}!"
+		"pt"	"{1}{green}{2}{default} achou a resposta certa! A resposta era: {orchid}{3}{default}!"
 	}
 	
 	"ImpossibleWords"
